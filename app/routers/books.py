@@ -33,7 +33,7 @@ def get_book(id: int, db: Session = Depends(get_db), current_user: int = Depends
 
 
 @router.post("/{id}")
-def get_book(page: schemas.BookPage, id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def choose_page(page: schemas.BookPage, id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     book = db.query(models.Book).filter(models.Book.id == id).first()
     if not book:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"book with id {id} is not found")
@@ -44,7 +44,7 @@ def get_book(page: schemas.BookPage, id: int, db: Session = Depends(get_db), cur
 
 
 @router.put("/{id}")
-def get_book(to_do: schemas.BookPlay, id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def play_audiobook(to_do: schemas.BookPlay, id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     book = db.query(models.Book).filter(models.Book.id == id).first()
     if not book:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"book with id {id} is not found")
