@@ -106,9 +106,10 @@ def split_into_sentences(text):
     return sentences
 
 book = None
+num_of_pages = 0
 
 def read_book(path, page_num):
-    global book
+    global book, num_of_pages
     url = path
     response = requests.get(url)
     with io.BytesIO(response.content) as open_pdf_file:

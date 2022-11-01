@@ -29,6 +29,9 @@ class BookOut(BaseModel):
 class BookPlay(BaseModel):
     play: conint(ge=0, le=3)
 
+class BookPage(BaseModel):
+    page: Optional[int]=0
+
 class Token(BaseModel):
     access_token: str
     token_type: str
