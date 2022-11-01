@@ -23,7 +23,7 @@ def get_books(db: Session = Depends(get_db), current_user: int = Depends(oauth2.
     return formated_books
 
 
-@router.get("/{id}", response_class=HTMLResponse)
+@router.get("/{id}", response_model=schemas.BookOut)
 def get_book(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     book = db.query(models.Book).filter(models.Book.id == id).first()
     if not book:

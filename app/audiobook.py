@@ -2,6 +2,8 @@ import PyPDF2
 import pyttsx3
 import threading
 import re
+import requests
+import io
 
 alphabets = "([A-Za-z])"
 prefixes = "(Mr|St|Mrs|Ms|Dr)[.]"
@@ -103,18 +105,20 @@ book = None
 
 def read_book(path, page_num):
     global book
-    file = ""
-    page = page_num
-    # path = 'D:\Books\Hobbit.pdf'
-    pdfReader = PyPDF2.PdfFileReader(open(rf"{path}", 'rb'))
-    num_of_pages = pdfReader.numPages
+    url = path
+    response = requests.get(url)
+    with io.BytesIO(response.content) as open_pdf_file:
+        pdfReader = PyPDF2.PdfFileReader(open_pdf_file)
+        num_of_pages = pdfReader.numPages
 
-    for count in range(page, num_of_pages):
-        pageObj = pdfReader.getPage(count)
-        file += pageObj.extractText()
+        file = ""
+        page = page_num
+        for count in range(page, num_of_pages):
+            pageObj = pdfReader.getPage(count)
+            file += pageObj.extractText()
 
-    book = split_into_sentences(file)
-    
+        book = split_into_sentences(file)
+        
 
 
 
