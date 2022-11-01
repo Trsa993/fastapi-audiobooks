@@ -4,6 +4,7 @@ import threading
 import re
 import requests
 import io
+import importlib
 
 alphabets = "([A-Za-z])"
 prefixes = "(Mr|St|Mrs|Ms|Dr)[.]"
@@ -13,27 +14,30 @@ acronyms = "([A-Z][.][A-Z][.](?:[A-Z][.])?)"
 websites = "[.](com|net|org|io|gov)"
 digits = "([0-9])"
 
-
+def speaker_init ():
+    importlib.reload(pyttsx3) # Workaround to be avoid pyttsx3 being stuck
+    speaker = pyttsx3.init()
+    return speaker
 
 class Speaking(threading.Thread):
     def __init__(self, list_of_sentences, **kw):
         super().__init__(**kw)
         self.sentences = list_of_sentences
         self.paused = False
-        self.speaker = pyttsx3.init()
-        self.speaker.setProperty('rate', 160)
-        self.voices = self.speaker.getProperty('voices')
-        self.speaker.setProperty('voice', self.voices[0].id)
+
 
     def run(self):
         self.running = True
         while self.sentences and self.running:
             if not self.paused:
                 sentence = self.sentences.pop(0)
+                self.speaker = speaker_init()
+                self.speaker.setProperty('rate', 160)
+                self.voices = self.speaker.getProperty('voices')
+                self.speaker.setProperty('voice', self.voices[0].id)
                 print(sentence)
                 self.speaker.say(sentence)
                 self.speaker.runAndWait()
-                print(self.running)
         print("finished")
         self.running = False
 
