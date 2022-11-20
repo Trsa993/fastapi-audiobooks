@@ -16,7 +16,7 @@ digits = "([0-9])"
 
 def speaker_init ():
     importlib.reload(pyttsx3) # Workaround to be avoid pyttsx3 being stuck
-    speaker = pyttsx3.init(driverName="sapi5")
+    speaker = pyttsx3.init(driverName="espeak")
     return speaker
 
 class Speaking(threading.Thread):
