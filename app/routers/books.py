@@ -1,4 +1,4 @@
-from fastapi import HTTPException, Depends, APIRouter, status
+from fastapi import HTTPException, Depends, APIRouter, status, BackgroundTasks
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from .. import schemas, models, oauth2
@@ -24,37 +24,37 @@ def get_books(db: Session = Depends(get_db), current_user: int = Depends(oauth2.
 
 
 @router.get("/{id}", response_model=schemas.BookOut)
-def get_book(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def get_book(id: int, background_task: BackgroundTasks, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     book = db.query(models.Book).filter(models.Book.id == id).first()
     if not book:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"book with id {id} is not found")
-    audiobook.read_book(book.path, 0)
+    background_task.add_task(audiobook.read_book, book.path, 0)
     return book
 
 
 @router.post("/{id}")
-def choose_page(page: schemas.BookPage, id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def choose_page(page: schemas.BookPage, id: int, background_task: BackgroundTasks, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     book = db.query(models.Book).filter(models.Book.id == id).first()
     if not book:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"book with id {id} is not found")
-    audiobook.read_book(book.path, page.page)
+    background_task(audiobook.read_book, book.path, page.page)
     if page.page > audiobook.num_of_pages:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"page {page.page} does not exist")
     return HTMLResponse(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.put("/{id}")
-def play_audiobook(to_do: schemas.BookPlay, id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def play_audiobook(commands: schemas.BookCommand, id: int, background_task: BackgroundTasks, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     book = db.query(models.Book).filter(models.Book.id == id).first()
     if not book:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"book with id {id} is not found")
-    if to_do.play == 0:
+    if commands.command == "play":
         audiobook.read()
-    elif to_do.play == 1:
+    elif commands.command == "pause":
         audiobook.pause()
-    elif to_do.play == 2:
+    elif commands.command == "resume":
         audiobook.unpause()
-    elif to_do.play == 3:
+    elif commands.command == "stop":
         audiobook.stop()
-        audiobook.read_book(book.path, 0)
+        background_task.add_task(audiobook.read_book, book.path, 0)
     return HTMLResponse(status_code=status.HTTP_204_NO_CONTENT)

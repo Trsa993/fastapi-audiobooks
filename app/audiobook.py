@@ -34,7 +34,7 @@ class Speaking(threading.Thread):
                 self.speaker = speaker_init()
                 self.speaker.setProperty('rate', 160)
                 self.voices = self.speaker.getProperty('voices')
-                self.speaker.setProperty('voice', self.voices[0].id)
+                self.speaker.setProperty('voice', self.voices[1].id)
                 print(sentence)
                 self.speaker.say(sentence)
                 self.speaker.runAndWait()

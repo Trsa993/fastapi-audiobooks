@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional
 from pydantic.types import conint
+from enum import Enum
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -26,8 +27,14 @@ class BookOut(BaseModel):
     class Config:
         orm_mode = True
 
-class BookPlay(BaseModel):
-    play: conint(ge=0, le=3)
+class BookCommands(str, Enum):
+    play = "play"
+    pause = "pause"
+    resume = "resume"
+    stop = "stop"
+
+class BookCommand(BaseModel):
+    command: BookCommands
 
 class BookPage(BaseModel):
     page: Optional[int]=0
