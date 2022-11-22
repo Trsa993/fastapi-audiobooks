@@ -1,9 +1,8 @@
-import PyPDF2
+import fitz
 import pyttsx3
 import threading
 import re
 import requests
-import io
 import importlib
 
 alphabets = "([A-Za-z])"
@@ -16,7 +15,7 @@ digits = "([0-9])"
 
 def speaker_init ():
     importlib.reload(pyttsx3) # Workaround to be avoid pyttsx3 being stuck
-    speaker = pyttsx3.init(driverName="espeak")
+    speaker = pyttsx3.init()
     return speaker
 
 class Speaking(threading.Thread):
@@ -100,6 +99,7 @@ def split_into_sentences(text):
     text = text.replace("?", "?<stop>")
     text = text.replace("!", "!<stop>")
     text = text.replace("<prd>", ".")
+    print(text)
     sentences = text.split("<stop>")
     sentences = sentences[:-1]
     sentences = [s.strip() for s in sentences]
@@ -112,22 +112,16 @@ def read_book(path, page_num):
     global book, num_of_pages
     url = path
     response = requests.get(url)
-    with io.BytesIO(response.content) as open_pdf_file:
-        pdfReader = PyPDF2.PdfFileReader(open_pdf_file)
-        num_of_pages = pdfReader.numPages
 
-        file = ""
-        page = page_num
-        for count in range(page, num_of_pages):
-            pageObj = pdfReader.getPage(count)
-            file += pageObj.extractText()
+    pdfReader = fitz.Document(stream=response.content, filetype="pdf")
+    num_of_pages = pdfReader.page_count
 
-        book = split_into_sentences(file)
+    file = ""
+    page = page_num
+    for count in range(page, num_of_pages):
+        pageObj = pdfReader.load_page(count)
+        file += pageObj.get_text()
+    pdfReader.close()
+
+    book = split_into_sentences(file)
         
-
-
-
-
-
-
-
