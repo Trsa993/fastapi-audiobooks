@@ -10,8 +10,6 @@
 
 ## Project description
 
----
-
 In this project, API is connected to the Postgresql database where data about created users and books is stored. In the Books table, there is a column named path which represents the link to the book PDF. PDFs can be stored for example in some cloud-based storage like Google Drive. File [audiobook.py](app/audiobook.py) is the main one for PDF processing and playing audiobooks.
 
 For PDF processing, module [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/intro.html) is used and for text to speech conversion [pyttsx3](https://pyttsx3.readthedocs.io/en/latest/).
