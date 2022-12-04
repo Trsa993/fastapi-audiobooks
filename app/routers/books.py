@@ -44,7 +44,7 @@ def choose_page(page: schemas.BookPage, id: int, background_task: BackgroundTask
 
 
 @router.put("/{id}")
-def play_audiobook(commands: schemas.BookCommand, id: int, background_task: BackgroundTasks, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def play_audiobook(commands: schemas.BookCommands, id: int, background_task: BackgroundTasks, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     book = db.query(models.Book).filter(models.Book.id == id).first()
     if not book:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"book with id {id} is not found")

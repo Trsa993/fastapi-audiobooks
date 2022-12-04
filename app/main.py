@@ -27,7 +27,7 @@ app.include_router(login.router)
 
 @app.get("/")
 def home_page():
-    return {"message": "Hello world"}
+    return {"message": "Audiobooks FastAPI"}
 
 
 

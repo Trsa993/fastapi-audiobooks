@@ -33,9 +33,6 @@ class BookCommands(str, Enum):
     resume = "resume"
     stop = "stop"
 
-class BookCommand(BaseModel):
-    command: BookCommands
-
 class BookPage(BaseModel):
     page: Optional[int]=0
 

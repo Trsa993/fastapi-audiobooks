@@ -14,7 +14,7 @@ websites = "[.](com|net|org|io|gov)"
 digits = "([0-9])"
 
 def speaker_init ():
-    importlib.reload(pyttsx3) # Workaround to be avoid pyttsx3 being stuck
+    importlib.reload(pyttsx3) # Workaround to avoid pyttsx3 being stuck
     speaker = pyttsx3.init()
     return speaker
 
@@ -99,7 +99,6 @@ def split_into_sentences(text):
     text = text.replace("?", "?<stop>")
     text = text.replace("!", "!<stop>")
     text = text.replace("<prd>", ".")
-    print(text)
     sentences = text.split("<stop>")
     sentences = sentences[:-1]
     sentences = [s.strip() for s in sentences]
