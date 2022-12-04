@@ -25,13 +25,9 @@ There are four options for audiobook:
 
 ## Requirements
 
----
-
 These [requirements](requirements.txt) are meant for Windows development. When using something different like Linux or Mac there are some slight changes.
 
 ## How to use
-
----
 
 Run project on localhost using _uvicorn app.main:app_ (with optional --reload).
 When the project is succesfully started go to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
@@ -43,7 +39,5 @@ To be able to use audiobook functions there must be a user created in the databa
 After logging in, use get request with an ID of desired book stored in the database and then from put method use the same ID and choose play from the dropdown list.
 
 ## Next steps
-
----
 
 This project will work on development, but for it to work on production server it is best to use some frontend framework that will process text to speech. For example, FastAPI will process PDF and then React will use that text to create text to speech conversion.
