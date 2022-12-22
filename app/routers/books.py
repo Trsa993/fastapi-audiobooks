@@ -15,12 +15,7 @@ router = APIRouter(
 @router.get("/", response_model=List[schemas.BookOut])
 def get_books(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
     books = db.query(models.Book).filter(models.Book.name.contains(search)).limit(limit).offset(skip).all()
-    formated_books = []
-    for row in books:
-        formated_books.append(
-            schemas.BookOut(id=row.id, name=row.name, author=row.author)
-        )
-    return formated_books
+    return books
 
 
 @router.get("/{id}", response_model=schemas.BookOut)
